@@ -2,6 +2,7 @@ export interface Environment {
   NODE_ENV: 'development' | 'production' | 'test';
   HOST: string;
   PORT: number;
+  HOSTNAME: string;
   ALLOWED_HOSTS: string;
   DB_HOST: string;
   DB_PORT: number;

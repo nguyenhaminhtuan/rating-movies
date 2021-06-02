@@ -20,6 +20,7 @@ async function bootstrap() {
   const port = configService.get<number>('PORT');
   const allowedHosts = configService.get<string>('ALLOWED_HOSTS').split(',');
 
+  app.setGlobalPrefix('api');
   app.enableCors({ origin: allowedHosts });
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalPipes(
@@ -29,6 +30,6 @@ async function bootstrap() {
   );
 
   await app.listen(port, host);
-  logger.log(`Nest application running on http://${host}:${port}`);
+  logger.log(`Nest application running on ${await app.getUrl()}`);
 }
 bootstrap();

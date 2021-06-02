@@ -12,6 +12,7 @@ import { ConfigService } from './config.service';
           .default('development'),
         HOST: Joi.string().default('127.0.0.1'),
         PORT: Joi.number().default(3000),
+        HOSTNAME: Joi.string().default('http://localhost:3000'),
         ALLOWED_HOSTS: Joi.string().required(),
         DB_HOST: Joi.string().required(),
         DB_PORT: Joi.number().required(),
