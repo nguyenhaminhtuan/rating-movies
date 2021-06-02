@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import Joi from 'joi';
+import { ConfigService } from './config.service';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import Joi from 'joi';
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
+        STATIC_ROUTE: Joi.string().default('/static'),
       }),
       validationOptions: {
         stripUnknown: true,
@@ -25,5 +27,7 @@ import Joi from 'joi';
       },
     }),
   ],
+  providers: [ConfigService],
+  exports: [ConfigService],
 })
 export class ConfigModule {}

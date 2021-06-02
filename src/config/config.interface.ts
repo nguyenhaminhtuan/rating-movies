@@ -9,4 +9,5 @@ export interface Environment {
   DB_USERNAME: string;
   DB_PASSWORD: string;
   JWT_SECRET: string;
+  STATIC_ROUTE: string;
 }
