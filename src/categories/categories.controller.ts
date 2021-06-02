@@ -4,6 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -47,7 +48,7 @@ export class CategoriesController {
   @Auth(UserRole.Admin)
   @Put(':id')
   update(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
     @CurrentUser('id') updatorId: string,
   ) {
@@ -55,9 +56,9 @@ export class CategoriesController {
   }
 
   @Auth(UserRole.Admin)
-  @Patch(':id')
+  @Patch(':id/active')
   updateActive(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body('isActived') isActived: boolean,
     @CurrentUser('id') updatorId: string,
   ) {

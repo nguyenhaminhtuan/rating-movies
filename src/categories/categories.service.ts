@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category';
@@ -15,15 +15,20 @@ export class CategoriesService {
   ) {}
 
   async findAll(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({ where: { isActived: true } });
   }
 
   async findBySlug(slug: string): Promise<Category | null> {
-    return this.categoryRepository.findOne({ where: { slug } });
+    return this.categoryRepository.findOne({
+      where: { slug, isActived: true },
+    });
   }
 
-  async findById(id: number): Promise<Category | null> {
-    return this.categoryRepository.findOne(id);
+  async findById(
+    id: number,
+    options: FindOneOptions<Category> = {},
+  ): Promise<Category | null> {
+    return this.categoryRepository.findOne(id, options);
   }
 
   async create(
@@ -33,7 +38,7 @@ export class CategoriesService {
     const category = this.categoryRepository.create(createCategoryDto);
     const newCategory = await this.categoryRepository.save(category);
     this.logger.log(
-      `Category ${newCategory.id} was created by User ${creatorId}`,
+      `Category "${newCategory.id}" was created by User "${creatorId}"`,
     );
 
     return newCategory;
@@ -47,14 +52,16 @@ export class CategoriesService {
     const category = await this.findById(id);
 
     if (!category) {
-      throw new NotFoundException(`Category with ID ${category.id} not found`);
+      throw new NotFoundException(
+        `Category with ID "${category.id}" not found`,
+      );
     }
 
     const updatedCategory = await this.categoryRepository.save(
       Object.assign(category, updateCategoryDto),
     );
     this.logger.log(
-      `Category ${updatedCategory.id} was updated by User ${updatorId}`,
+      `Category "${updatedCategory.id}" was updated by User "${updatorId}"`,
     );
 
     return updatedCategory;
@@ -68,7 +75,9 @@ export class CategoriesService {
     const category = await this.findById(id);
 
     if (!category) {
-      throw new NotFoundException(`Category with ID ${category.id} not found`);
+      throw new NotFoundException(
+        `Category with ID "${category.id}" not found`,
+      );
     }
 
     const update = await this.categoryRepository.update(id, { isActived });
@@ -78,7 +87,9 @@ export class CategoriesService {
     }
 
     const action = isActived ? 'active' : 'deactive';
-    this.logger.log(`Category ${category.id} ${action} by User ${updatorId}`);
+    this.logger.log(
+      `Category "${category.id}" ${action} by User "${updatorId}"`,
+    );
 
     return true;
   }
