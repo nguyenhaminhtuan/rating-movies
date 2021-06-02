@@ -1,41 +1,28 @@
-import slugify from '../utils/slugify';
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { SlugifyEntity } from '../common/entity/slugify.entity';
+import { Movie } from '../movies/movie.entity';
 
 @Entity()
-export class Category {
+export class Category extends SlugifyEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { default: '' })
-  name: string;
-
-  @Column('varchar', { unique: true, default: '' })
-  slug: string;
-
   @Column({ default: true })
   isActived: boolean;
+
+  @OneToMany(() => Movie, (movie) => movie.category)
+  movies: Movie[];
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @BeforeInsert()
-  private createSlug() {
-    this.slug = slugify(this.name);
-  }
-
-  @BeforeUpdate()
-  private updateSlug() {
-    this.slug = slugify(this.name);
-  }
 }
